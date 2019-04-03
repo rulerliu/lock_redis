@@ -13,7 +13,6 @@ class ThreadDemo implements Runnable {
 
 	public synchronized void run() {
 		count();
-
 	}
 
 	private synchronized void count() {

@@ -16,12 +16,17 @@ package com.itmayiedu;
  * 联系方式:qq644064779<br>
  * 注意:本内容有每特教育学员共同研发,请尊重原创版权
  */
-public class Test002 {
+public class RedisLockTest {
 
 	public static void main(String[] args) {
-		LockService lockService = new LockService();
+		OrderService lockService = new OrderService();
 		for (int i = 0; i < 100; i++) {
-			new ThreadRedis(lockService).start();
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					lockService.seckill();
+				}
+			}).start();
 		}
 	}
 

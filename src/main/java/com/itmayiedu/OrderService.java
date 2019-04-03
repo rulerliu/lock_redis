@@ -19,8 +19,9 @@ import redis.clients.jedis.JedisPoolConfig;
  * 联系方式:qq644064779<br>
  * 注意:本内容有每特教育学员共同研发,请尊重原创版权
  */
-public class LockService {
+public class OrderService {
 	
+	// 此处应该是spring容器注入
 	private static JedisPool pool = null;
 	public static int count = 0;
 
@@ -34,24 +35,29 @@ public class LockService {
 		config.setMaxWaitMillis(1000 * 100);
 		// 在borrow一个jedis实例时，是否需要验证，若为true，则所有jedis实例均是可用的
 		config.setTestOnBorrow(true);
-		pool = new JedisPool(config, "localhost", 6379, 3000, "123456");
+		pool = new JedisPool(config, "localhost", 6379, 3000, "25362e3e047b413d:Redis123");
 	}
 
-	private LockRedis lockRedis = new LockRedis(pool);
-
-	
+	private RedisLock lockRedis = new RedisLock(pool);
 	
 	// 演示redis实现分布式锁
 	public void seckill() {
 		// 1.获取锁
-		String identifierValue = lockRedis.getRedisLock(5000l, 5000l);
+		String redislockKey = "redis_lock";
+		String identifierValue = lockRedis.getRedisLock(redislockKey, 5000l, 5000l);
 		if (identifierValue == null) {
 			System.out.println(Thread.currentThread().getName() + ",获取锁失败，原因因为获取锁时间超时...");
 			return;
 		}
-		System.out.println(Thread.currentThread().getName() + "获取锁成功,锁的id:" + identifierValue + ",count = " + ++count);
-
-		// 2.释放锁
-		lockRedis.unRedisLock(identifierValue);
+		
+		try {
+			// todo
+			System.out.println(Thread.currentThread().getName() + "获取锁成功,锁的id:" + identifierValue + ",count = " + ++count);
+		} catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			// 2.释放锁
+			lockRedis.unRedisLock(redislockKey, identifierValue);
+		}
 	}
 }
