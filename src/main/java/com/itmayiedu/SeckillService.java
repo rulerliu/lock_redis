@@ -4,6 +4,9 @@ import org.apache.commons.lang.StringUtils;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class SeckillService {
 	
 	private static JedisPool pool = null;
@@ -30,6 +33,7 @@ public class SeckillService {
 	 * 演示秒杀redis实现分布式锁
 	 */
 	public void seckill() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss SSS");
 		String identifierValue = "";
 		try {
 			// 1.获取锁
@@ -38,7 +42,7 @@ public class SeckillService {
 				System.out.println(Thread.currentThread().getName() + ",获取锁失败，因为获取锁时间超时...");
 				return;
 			}
-			System.out.println(Thread.currentThread().getName() + "获取锁成功,锁的id:" + identifierValue + ",count = " + ++count);
+			System.out.println(Thread.currentThread().getName() + "获取锁成功,锁的id:" + identifierValue + ",count = " + ++count + ",时间：" + sdf.format(new Date()));
 
 			// 处理业务逻辑
 			Thread.sleep(500);
