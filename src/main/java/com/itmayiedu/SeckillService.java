@@ -1,9 +1,3 @@
-/**
- * 功能说明:
- * 功能作者:
- * 创建日期:
- * 版权归属:每特教育|蚂蚁课堂所有 www.itmayiedu.com
- */
 package com.itmayiedu;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,7 +23,7 @@ public class SeckillService {
 //		pool = new JedisPool(config, "localhost", 6379, 3000, "123456");
 	}
 
-	private LockRedis lockRedis = new LockRedis(pool);
+	private RedisLock lockRedis = new RedisLock(pool);
 
 
 	/**
@@ -39,7 +33,7 @@ public class SeckillService {
 		String identifierValue = "";
 		try {
 			// 1.获取锁
-			identifierValue = lockRedis.getRedisLock("liuwq", 5000L, 5000L);
+			identifierValue = lockRedis.getRedisLock("liuwq", 2000L, 5000L);
 			if (StringUtils.isBlank(identifierValue)) {
 				System.out.println(Thread.currentThread().getName() + ",获取锁失败，因为获取锁时间超时...");
 				return;

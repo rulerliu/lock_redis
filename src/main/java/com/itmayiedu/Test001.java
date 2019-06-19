@@ -22,7 +22,7 @@ class ThreadDemo implements Runnable {
 
 //	private synchronized void count() {
 	private void count() {
-//		lock.lock();
+		lock.lock();
 		try {
 			Thread.sleep(15);
 			count++;

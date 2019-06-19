@@ -1,26 +1,19 @@
-/**
- * 功能说明:
- * 功能作者:
- * 创建日期:
- * 版权归属:每特教育|蚂蚁课堂所有 www.itmayiedu.com
- */
 package com.itmayiedu;
 
 import org.apache.commons.lang.StringUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-
 import java.util.UUID;
 
-public class LockRedis {
-	
+public class RedisLock {
+
 	// redis线程池
 	private JedisPool jedisPool;
 	
 	// 同时在redis上创建相同的一个key 相同key 名称
 	private static final String REDIS_LOCK_KEY = "redis_lock";
 
-	public LockRedis(JedisPool jedisPool) {
+	public RedisLock(JedisPool jedisPool) {
 		this.jedisPool = jedisPool;
 	}
 	// redis 以key （redislockKey） 和value（随机不能够重复数字 锁的id）方式进行存储
@@ -35,15 +28,11 @@ public class LockRedis {
 	/**
 	 * acquireTimeout
 	 * 
-	 * @param acquireTimeout
-	 *            在获取锁之前的超时时间：在尝试获取锁的时候，如果在规定的时间内还没有获取锁，直接放弃。
-	 * @param timeOut
-	 *            在获取锁之后的超时时间：当获取锁成功之后，对应的key 有对应有效期，对应的key 在规定时间内进行失效
+	 * @param acquireTimeout：在获取锁之前的超时时间：在尝试获取锁的时候，如果在规定的时间内还没有获取锁，直接放弃
+	 * @param timeOut：在获取锁之后的超时时间：当获取锁成功之后，对应的key 有对应有效期，对应的key 在规定时间内进行失效
 	 */
-	// 基于redis实现分布式锁代码思路 核心方法 获取锁 、释放锁
 	public String getRedisLock(String key, Long acquireTimeout, Long timeOut) {
 		Jedis conn = null;
-
 		try {
 			// 1.建立redis连接
 			conn = jedisPool.getResource();
@@ -70,7 +59,6 @@ public class LockRedis {
 				// 为什么获取锁之后，还要设置锁的超时时间 目的是为了防止死锁
 				// zookeeper实现分布式锁通过什么方式 防止死锁 设置session 有效期
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -79,29 +67,31 @@ public class LockRedis {
 			}
 		}
 		return null;
-
 	}
 
 	// 如果直接使用 conn.del(redislockKey); 保证对应是自己的创建redislockKey 删除对应自己的。
 
-	// 释放redis锁
-	public void unRedisLock(String key, String identifierValue) {
+	/**
+	 * 释放redis锁
+	 */
+	public void unRedisLock (String key, String identifierValue) {
 		if (StringUtils.isBlank(identifierValue)) {
 			return;
 		}
+
 		Jedis conn = null;
-		// 1.建立redis连接
-		conn = jedisPool.getResource();
 		try {
+			// 1.建立redis连接
+			conn = jedisPool.getResource();
 			// 如果该锁的id 等于identifierValue 是同一把锁情况才可以删除
 			String value = conn.get(getLockKey(key));
 			if (identifierValue.equals(value)) {
 				System.out.println(String.format("############释放锁成功#############锁id:%s", identifierValue));
 				conn.del(getLockKey(key));
 			}
-		} catch (Exception e){
+		} catch(Exception e){
 			e.printStackTrace();
-		} finally {
+		} finally{
 			if (conn != null) {
 				conn.close();
 			}
@@ -114,4 +104,5 @@ public class LockRedis {
 	private String getLockKey(String key) {
 		return REDIS_LOCK_KEY + "_" + key;
 	}
+
 }
