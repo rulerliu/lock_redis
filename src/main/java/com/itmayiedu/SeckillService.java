@@ -43,14 +43,14 @@ public class SeckillService {
 
 
 	/**
-	 * 演示秒杀redis实现分布式锁
+	 * 方式一: redis实现分布式锁
 	 */
 	public void seckill() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss SSS");
 		String identifierValue = "";
 		try {
 			// 1.获取锁
-			identifierValue = lockRedis.getRedisLock("liuwq", 2000L, 5000L);
+			identifierValue = lockRedis.getRedisLock("liuwq", 2000L, 2000L);
 			if (StringUtils.isBlank(identifierValue)) {
 				System.out.println(Thread.currentThread().getName() + ",获取锁失败，因为获取锁时间超时...");
 				return;
@@ -71,7 +71,7 @@ public class SeckillService {
 
 	RedisLockUtils lockUtils = new RedisLockUtils(pool);
 	/**
-	 * 演示秒杀redis实现分布式锁
+	 * 方式二: redis实现分布式锁
 	 */
 	public void seckill2() {
 		String lockKey = RedisLockUtils.getLockKey("BALANCE_SEND_LOCK", "1111","2222");
@@ -81,30 +81,23 @@ public class SeckillService {
 		}
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss SSS");
-//		String identifierValue = "";
-//		// 1.获取锁
-//		identifierValue = lockRedis.getRedisLock("liuwq", 2000L, 5000L);
-//		if (StringUtils.isBlank(identifierValue)) {
-//			System.out.println(Thread.currentThread().getName() + ",获取锁失败，因为获取锁时间超时...");
-//			return;
-//		}
 		System.out.println(Thread.currentThread().getName() + "获取锁成功," + ",count = " + ++count + ",时间：" + sdf.format(new Date()));
 
 		// 处理业务逻辑
-//		try {
-//			Thread.sleep(500);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
+		try {
 
-		lockUtils.unlock(lockKey);
+		} catch (Exception e) {
+
+		} finally {
+			lockUtils.unlock(lockKey);
+		}
 	}
 
 
 	private RedissonClient redissonClient = RedissionUtils.getInstance().getRedisson(config2);
 
 	/**
-	 * 演示秒杀redisdion实现分布式锁
+	 * 方式三: redisdion实现分布式锁
 	 */
 	public void seckill3() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss SSS");

@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @description:
+ * @description: 方式三: redis锁
  * @author: liuwq
  * @date: 2019/6/20 0020 下午 2:41
  * @version: V1.0

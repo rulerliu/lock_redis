@@ -5,7 +5,6 @@ import org.redisson.Redisson;
 import org.redisson.RedissonClient;
 import org.redisson.core.RLock;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -16,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class RedissionConfig {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         Config config = new Config();
         config.useSingleServer().setAddress("127.0.0.1:6379");
         RedissonClient redisson = Redisson.create(config);

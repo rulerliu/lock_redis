@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <p>Title: RedisLockUtils</p>
- * <p>Description: redis锁工具类 </p>
+ * <p>Description: 方式二: redis锁工具类 </p>
  * @author liuwq
  * @date 2019年4月2日  下午5:07:06
  */

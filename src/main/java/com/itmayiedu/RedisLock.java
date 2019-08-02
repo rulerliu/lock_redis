@@ -5,6 +5,9 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import java.util.UUID;
 
+/**
+ * 方式一: redis锁
+ */
 public class RedisLock {
 
 	// redis线程池
@@ -28,8 +31,8 @@ public class RedisLock {
 	/**
 	 * acquireTimeout
 	 * 
-	 * @param acquireTimeout：在获取锁之前的超时时间：在尝试获取锁的时候，如果在规定的时间内还没有获取锁，直接放弃
-	 * @param timeOut：在获取锁之后的超时时间：当获取锁成功之后，对应的key 有对应有效期，对应的key 在规定时间内进行失效
+	 * @param acquireTimeout：单位:毫秒, 在获取锁之前的超时时间：在尝试获取锁的时候，如果在规定的时间内还没有获取锁，直接放弃
+	 * @param timeOut：单位:毫秒, 在获取锁之后的超时时间：当获取锁成功之后，对应的key 有对应有效期，对应的key 在规定时间内进行失效
 	 */
 	public String getRedisLock(String key, Long acquireTimeout, Long timeOut) {
 		Jedis conn = null;
